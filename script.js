@@ -1,14 +1,24 @@
 // ==========================================
 // THEME SWITCHER
-// TODO: Implement theme switching with localStorage
 // ==========================================
 
 const themeToggle = document.querySelector('.theme-toggle');
 const root = document.documentElement;
 
-// TODO: Check for saved theme preference and apply it
+// Check for saved theme preference
+const currentTheme = localStorage.getItem('theme') || 'light';
+root.setAttribute('data-theme', currentTheme);
 
-// TODO: Add click event listener to toggle theme
+themeToggle.addEventListener('click', () => {
+    const newTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+
+    root.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    // One full spin, then back to normal (removed when the animation ends)
+    themeToggle.classList.add('spinning');
+    themeToggle.addEventListener('animationend', () => themeToggle.classList.remove('spinning'), { once: true });
+});
 
 // ==========================================
 // SMOOTH SCROLLING FOR NAVIGATION
@@ -36,35 +46,45 @@ document.querySelectorAll('.nav-link').forEach(link => {
 
 // ==========================================
 // INTERSECTION OBSERVER FOR ANIMATIONS
-// TODO: Implement scroll-triggered animations
 // ==========================================
 
-// TODO: Create IntersectionObserver for entrance animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
 
-// TODO: Observe all elements with .animate-on-scroll class
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target); // animate once
+        }
+    });
+}, observerOptions);
+
+// Observe the sections AND the two grids (the grids carry stagger-children)
+document.querySelectorAll('.animate-on-scroll, .stagger-children').forEach(el => {
+    observer.observe(el);
+});
 
 // ==========================================
 // PARALLAX EFFECT
-// TODO: Implement parallax scrolling for hero section
 // ==========================================
 
-// TODO: Add scroll event listener for parallax effect
+// TODO (Part 5, optional): Add scroll event listener for parallax effect
 
 // ==========================================
 // TYPING ANIMATION
-// TODO: Implement typing effect for hero title
 // ==========================================
 
-// TODO: Create typing animation function
+// (Part 5 uses a CSS typing animation instead, so this stays empty)
 
 // ==========================================
 // PROJECT CARD INTERACTIONS
 // ==========================================
 
-// Add click handlers to project cards for more interactivity
 document.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('click', function() {
-        // You can add modal or expand functionality here
         console.log('Project clicked:', this.querySelector('h3').textContent);
     });
 });
@@ -98,5 +118,3 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
-
-// TODO: Apply debounce to scroll event handlers

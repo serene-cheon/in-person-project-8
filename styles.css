@@ -1,31 +1,56 @@
 /* ==========================================
    CSS VARIABLES & DESIGN SYSTEM
-   TODO: Complete the design system with all variables
    ========================================== */
 
 :root {
-  /* Color System - TODO: Add more color variations */
+  /* Color System */
   --color-primary: #667eea;
   --color-primary-dark: #5a67d8;
+  --color-secondary: #48bb78;
+  --color-accent: #f6ad55;
+
   --color-text-primary: #2d3748;
+  --color-text-secondary: #718096;
   --color-background: #ffffff;
   --color-surface: #f7fafc;
+  --color-border: #e2e8f0;
 
-  /* Spacing System - TODO: Use consistently throughout */
+  /* Spacing System */
+  --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
 
-  /* Animation Timing - TODO: Add more timing variations */
+  /* Typography */
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+
+  /* Animation Timing */
+  --transition-fast: 150ms;
   --transition-base: 250ms;
+  --transition-slow: 350ms;
+  --transition-slower: 500ms;
+
+  /* Easing Functions */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Dark Theme - TODO: Complete dark theme variables */
+/* Dark Theme Variables */
 [data-theme="dark"] {
   --color-text-primary: #f7fafc;
+  --color-text-secondary: #cbd5e0;
   --color-background: #1a202c;
   --color-surface: #2d3748;
+  --color-border: #4a5568;
 }
 
 /* ==========================================
@@ -43,7 +68,8 @@ body {
   line-height: 1.6;
   color: var(--color-text-primary);
   background: var(--color-background);
-  /* TODO: Add smooth transition for theme switching */
+  transition: background-color var(--transition-slow),
+              color var(--transition-slow);
 }
 
 .container {
@@ -54,7 +80,6 @@ body {
 
 /* ==========================================
    THEME TOGGLE
-   TODO: Add rotation animation on click
    ========================================== */
 
 .theme-toggle {
@@ -68,8 +93,23 @@ body {
   border: 2px solid var(--color-primary);
   cursor: pointer;
   z-index: 1000;
-  font-size: 1.5rem;
-  /* TODO: Add hover effect and transition */
+  font-size: var(--font-size-2xl);
+  transition: transform var(--transition-base),
+              border-color var(--transition-base),
+              background-color var(--transition-slow);
+}
+
+.theme-toggle:hover {
+  transform: rotate(180deg);
+  border-color: var(--color-primary);
+}
+
+@keyframes spin-once {
+  to { transform: rotate(360deg); }
+}
+
+.theme-toggle.spinning {
+  animation: spin-once var(--transition-slow) var(--ease-in-out);
 }
 
 /* Hide moon in light mode, sun in dark mode */
@@ -81,9 +121,16 @@ body {
   display: none;
 }
 
+/* Surfaces with their own background fade with the theme too */
+.navbar,
+.skill-card,
+.footer,
+.image-placeholder {
+  transition: background-color var(--transition-slow);
+}
+
 /* ==========================================
    NAVIGATION
-   TODO: Add underline animation for links
    ========================================== */
 
 .navbar {
@@ -99,7 +146,8 @@ body {
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--spacing-lg);
+  /* right padding leaves room for the fixed theme toggle */
+  padding: 0 calc(var(--spacing-lg) + 50px + var(--spacing-md)) 0 var(--spacing-lg);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -119,12 +167,27 @@ body {
   color: var(--color-text-primary);
   text-decoration: none;
   position: relative;
-  /* TODO: Add hover effect with underline animation */
+  transition: color var(--transition-fast);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width var(--transition-base) var(--ease-out);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
 }
 
 /* ==========================================
    HERO SECTION
-   TODO: Add typing animation for title
    ========================================== */
 
 .hero {
@@ -138,11 +201,11 @@ body {
 .hero-title {
   font-size: 3rem;
   margin-bottom: var(--spacing-md);
-  /* TODO: Add typing animation */
+  /* TODO (Part 5, optional): Add typing animation */
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: var(--font-size-xl);
   margin-bottom: var(--spacing-lg);
   opacity: 0.8;
 }
@@ -154,18 +217,21 @@ body {
 
 /* ==========================================
    BUTTONS
-   TODO: Add hover and active states with transforms
    ========================================== */
 
 .btn {
-  padding: 0.75rem 2rem;
+  padding: 0.75rem var(--spacing-lg);
   border: none;
   border-radius: 0.375rem;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   text-decoration: none;
   display: inline-block;
-  /* TODO: Add transition for smooth hover effects */
+  transition: transform var(--transition-base) var(--ease-in-out),
+              box-shadow var(--transition-base) var(--ease-in-out),
+              background-color var(--transition-base),
+              color var(--transition-base);
+  transform: translateY(0);
 }
 
 .btn-primary {
@@ -179,7 +245,24 @@ body {
   border: 2px solid var(--color-primary);
 }
 
-/* TODO: Add hover states with transform and shadow */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn:active {
+  transform: translateY(0);
+  transition-duration: var(--transition-fast);
+}
 
 /* ==========================================
    SECTIONS
@@ -192,7 +275,7 @@ section {
 .section-title {
   font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: var(--spacing-xl);
   color: var(--color-primary);
 }
 
@@ -214,12 +297,10 @@ section {
   align-items: center;
   justify-content: center;
   border-radius: 0.5rem;
-  /* TODO: Add hover effect */
 }
 
 /* ==========================================
    PROJECTS SECTION
-   TODO: Add card hover animations
    ========================================== */
 
 .projects-grid {
@@ -230,9 +311,20 @@ section {
 
 .project-card {
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   overflow: hidden;
-  /* TODO: Add hover transform and shadow */
+  transition: transform var(--transition-base) var(--ease-out),
+              box-shadow var(--transition-base) var(--ease-out),
+              border-color var(--transition-base),
+              background-color var(--transition-slow);
+  cursor: pointer;
+}
+
+.project-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-primary);
 }
 
 .project-image {
@@ -242,7 +334,7 @@ section {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.5rem;
+  font-size: var(--font-size-2xl);
 }
 
 .image-wrapper {
@@ -251,7 +343,15 @@ section {
 }
 
 .image-overlay {
-  /* TODO: Add overlay effect on hover */
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.project-card:hover .image-overlay {
+  opacity: 1;
 }
 
 .project-card h3 {
@@ -273,14 +373,13 @@ section {
 .tag {
   background: var(--color-primary);
   color: white;
-  padding: 0.25rem 0.5rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: 0.25rem;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 /* ==========================================
    SKILLS SECTION
-   TODO: Add card entrance animations
    ========================================== */
 
 .skills-grid {
@@ -294,7 +393,6 @@ section {
   padding: var(--spacing-lg);
   border-radius: 0.5rem;
   text-align: center;
-  /* TODO: Add hover effect */
 }
 
 .skill-icon {
@@ -308,7 +406,7 @@ section {
 }
 
 .skill-card li {
-  padding: 0.25rem 0;
+  padding: var(--spacing-xs) 0;
 }
 
 /* ==========================================
@@ -344,37 +442,73 @@ section {
 
 /* ==========================================
    ANIMATIONS
-   TODO: Create keyframe animations
    ========================================== */
 
-/* TODO: Add fadeInUp animation */
 @keyframes fadeInUp {
-  /* Your implementation here */
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* TODO: Add typing animation */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Staggered animation for grid children */
+@keyframes fadeInStagger {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* TODO (Part 5, optional): Add typing animation */
 @keyframes typing {
   /* Your implementation here */
 }
 
-/* TODO: Add float animation for background elements */
+/* TODO (Part 5, optional): Add float animation for background elements */
 
 /* ==========================================
    UTILITY CLASSES
    ========================================== */
 
 .animate-on-scroll {
-  /* TODO: Set initial state for scroll animations */
+  opacity: 0;
 }
 
+/* backwards (not forwards): once the animation ends it lets go,
+   so :hover transforms keep working */
 .animate-on-scroll.visible {
-  /* TODO: Apply animation when visible */
+  opacity: 1;
+  animation: fadeInUp var(--transition-slower) var(--ease-out) backwards;
 }
 
-/* Staggered animations */
+/* Grid children start hidden and fade in one after another */
 .stagger-children > * {
-  /* TODO: Add staggered delay for children */
+  opacity: 0;
 }
+
+.stagger-children.visible > * {
+  opacity: 1;
+  animation: fadeInStagger var(--transition-slow) var(--ease-out) backwards;
+}
+
+.stagger-children.visible > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children.visible > *:nth-child(2) { animation-delay: 100ms; }
+.stagger-children.visible > *:nth-child(3) { animation-delay: 200ms; }
+.stagger-children.visible > *:nth-child(4) { animation-delay: 300ms; }
+.stagger-children.visible > *:nth-child(5) { animation-delay: 400ms; }
+.stagger-children.visible > *:nth-child(6) { animation-delay: 500ms; }
 
 /* ==========================================
    RESPONSIVE DESIGN
@@ -388,7 +522,6 @@ section {
     left: 0;
     width: 100%;
     background: var(--color-background);
-    /* Add mobile menu styles */
   }
 
   .about-content {
@@ -396,7 +529,7 @@ section {
   }
 
   .hero-title {
-    font-size: 2rem;
+    font-size: var(--font-size-3xl);
   }
 
   .projects-grid,
